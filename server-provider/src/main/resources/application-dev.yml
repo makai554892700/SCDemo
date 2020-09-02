@@ -1,0 +1,47 @@
+server:
+  port: 8102
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: server-provider
+  zipkin:
+    base-url: http://${properties.zipkin-addr}:${properties.zipkin-port}
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    zookeeper:
+      connect-string: ${properties.zookeeper-addr}:${properties.zookeeper-port}
+    stream:
+      binders:
+        defaultRabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${properties.rabbitmq-addr}
+                port: ${properties.rabbitmq-port}
+                username: ${properties.rabbitmq-user}
+                password: ${properties.rabbitmq-pass}
+      bindings:
+        output:
+          destination: studyExchange
+          content-type: application/json
+          binder: defaultRabbit
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+feign:
+  sentinel:
+    enabled: true
+logging:
+  level:
+    org.springframework.cloud.gateway: WARN
+    com.alibaba.nacos.client.config.impl.ClientWorker: WARN
+

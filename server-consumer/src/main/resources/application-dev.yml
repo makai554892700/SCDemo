@@ -1,0 +1,59 @@
+server:
+  port: 8101
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: server-consumer
+  zipkin:
+    base-url: http://${properties.zipkin-addr}:${properties.zipkin-port}
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    zookeeper:
+      connect-string: ${properties.zookeeper-addr}:${properties.zookeeper-port}
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: server-consumer
+          uri: lb://server-consumer
+          predicates:
+            - Path=/api/consumer/**
+        - id: server-provider
+          uri: lb://server-provider
+          predicates:
+            - Path=/api/provider/**
+    stream:
+      binders:
+        defaultRabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${properties.rabbitmq-addr}
+                port: ${properties.rabbitmq-port}
+                username: ${properties.rabbitmq-user}
+                password: ${properties.rabbitmq-pass}
+      bindings:
+        input:
+          destination: studyExchange
+          content-type: application/json
+          binder: defaultRabbit
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+feign:
+  sentinel:
+    enabled: true
+logging:
+  level:
+    org.springframework.cloud.gateway: WARN
+    com.alibaba.nacos.client.config.impl.ClientWorker: WARN

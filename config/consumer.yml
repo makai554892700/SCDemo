@@ -1,0 +1,20 @@
+properties:
+  common-addr: localhost
+  zookeeper-addr: ${properties.common-addr}
+  zookeeper-port: 2181
+  mysql-addr: ${properties.common-addr}
+  mysql-port: 3306
+  mysql-user: root
+  mysql-pass: marking123
+  redis-addr: ${properties.common-addr}
+  redis-port: 6379
+  rabbitmq-addr: ${properties.common-addr}
+  rabbitmq-port: 5672
+  rabbitmq-user: guest
+  rabbitmq-pass: guest
+  seata-addr: ${properties.common-addr}
+  seata-port: 8091
+  zipkin-addr: ${properties.common-addr}
+  zipkin-port: 9411
+
+
